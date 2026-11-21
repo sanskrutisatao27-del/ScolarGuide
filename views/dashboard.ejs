@@ -1,0 +1,73 @@
+<%- include('partials/header') %>
+<h2>Hi <%= user.name %> 👋</h2>
+<p class="muted">Fill in your details to see scholarships you may qualify for (Maharashtra residents).</p>
+
+<div class="grid">
+  <section class="panel">
+    <h3>Your details</h3>
+    <% if (error) { %><p class="error"><%= error %></p><% } %>
+    <form method="POST" action="/dashboard">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+      <label>Yearly family income (₹)
+        <input type="number" name="income" min="0" required value="<%= profile ? profile.income : '' %>">
+      </label>
+
+      <label>Category
+        <select name="category" required>
+          <% CATEGORIES.forEach(c => { %>
+            <option value="<%= c %>" <%= profile && profile.category === c ? 'selected' : '' %>><%= c %></option>
+          <% }) %>
+        </select>
+      </label>
+
+      <label>Gender
+        <select name="gender" required>
+          <% GENDERS.forEach(g => { %>
+            <option value="<%= g %>" <%= profile && profile.gender === g ? 'selected' : '' %>><%= g %></option>
+          <% }) %>
+        </select>
+      </label>
+
+      <label>Current education level
+        <select name="level" required>
+          <% LEVELS.forEach(l => { %>
+            <option value="<%= l %>" <%= profile && profile.level === l ? 'selected' : '' %>><%= l %></option>
+          <% }) %>
+        </select>
+      </label>
+
+      <label>Marks in last exam (%)
+        <input type="number" step="0.01" min="0" max="100" name="percentage" required value="<%= profile ? profile.percentage : '' %>">
+      </label>
+
+      <label class="check">
+        <input type="checkbox" name="disability" <%= profile && profile.disability ? 'checked' : '' %>>
+        I have a disability (40% or more)
+      </label>
+
+      <button class="btn">Find scholarships</button>
+    </form>
+  </section>
+
+  <section>
+    <h3>Your matches</h3>
+    <% if (matches === null) { %>
+      <p class="muted">Submit your details to see results.</p>
+    <% } else if (matches.length === 0) { %>
+      <p class="muted">No exact matches right now. Check the official portals directly, new schemes open often.</p>
+    <% } else { %>
+      <p class="muted"><%= matches.length %> scholarship(s) found</p>
+      <% matches.forEach(s => { %>
+        <article class="card sch">
+          <span class="pill <%= s.provider_type.toLowerCase() %>"><%= s.provider_type %></span>
+          <h4><%= s.name %></h4>
+          <p class="muted small-text"><%= s.provider %></p>
+          <p><%= s.description %></p>
+          <a class="btn small" href="<%= s.link %>" target="_blank" rel="noopener noreferrer">Apply on official portal ↗</a>
+        </article>
+      <% }) %>
+    <% } %>
+  </section>
+</div>
+<%- include('partials/footer') %>

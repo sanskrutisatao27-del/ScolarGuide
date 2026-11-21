@@ -1,0 +1,14 @@
+<%- include('partials/header') %>
+<section class="auth">
+  <h2>Create your account</h2>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <form method="POST" action="/register">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label>Full name <input name="name" required maxlength="80"></label>
+    <label>Email <input type="email" name="email" required maxlength="120"></label>
+    <label>Password (min 8 characters) <input type="password" name="password" required minlength="8"></label>
+    <button class="btn">Sign up</button>
+  </form>
+  <p class="muted">Already have an account? <a href="/login">Log in</a></p>
+</section>
+<%- include('partials/footer') %>
